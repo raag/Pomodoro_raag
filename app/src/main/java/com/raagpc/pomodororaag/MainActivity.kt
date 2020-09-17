@@ -24,6 +24,8 @@ class MainActivity : AppCompatActivity() {
         val provider = MainActivityViewModelFactory(context = this)
         viewModel = ViewModelProvider(this, provider).get(MainActivityViewModel::class.java)
 
+        mBinding.viewModel = viewModel
+
         setupUI()
         setupEvents()
         setupObservers()
