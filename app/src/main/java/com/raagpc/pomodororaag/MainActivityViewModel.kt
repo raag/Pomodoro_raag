@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.MediaPlayer
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.raagpc.pomodororaag.util.NotificationHelper
 
 class MainActivityViewModel(private val context: Context): ViewModel() {
     enum class UIStatus {
@@ -17,19 +18,27 @@ class MainActivityViewModel(private val context: Context): ViewModel() {
     }
 
     private var loops = 0
+
     val status = MutableLiveData<UIStatus>()
-    private lateinit var player: MediaPlayer
+    val runningStatus = listOf(
+        UIStatus.RUNNING_WORK,
+        UIStatus.RUNNING_BREAK
+    )
+    val showResetStatus = listOf(
+        UIStatus.RUNNING_WORK,
+        UIStatus.RUNNING_BREAK,
+        UIStatus.PAUSE_WORK,
+        UIStatus.PAUSE_BREAK
+    )
+    val workingStatus = listOf(
+        UIStatus.READY_TO_WORK,
+        UIStatus.RUNNING_WORK,
+        UIStatus.PAUSE_WORK,
+        UIStatus.LOADING
+    )
 
     init {
-        status.value = UIStatus.LOADING
-        setupPlayer()
-    }
-
-    private fun setupPlayer() {
-        player = MediaPlayer.create(context, R.raw.beep)
-        player.setOnPreparedListener {
-            status.postValue(UIStatus.READY_TO_WORK)
-        }
+        status.postValue(UIStatus.READY_TO_WORK)
     }
 
     fun toggleTimer() {
@@ -42,13 +51,16 @@ class MainActivityViewModel(private val context: Context): ViewModel() {
     }
 
     fun onTimerFinish() {
-        player.start()
         when (status.value) {
             UIStatus.RUNNING_WORK -> {
                 loops ++
                 status.value = UIStatus.READY_TO_BREAK
+                NotificationHelper.sendNotification(context, R.string.break_notification)
             }
-            UIStatus.RUNNING_BREAK -> status.value = UIStatus.READY_TO_WORK
+            UIStatus.RUNNING_BREAK -> {
+                status.value = UIStatus.READY_TO_WORK
+                NotificationHelper.sendNotification(context, R.string.work_notification)
+            }
             else -> {}
         }
     }

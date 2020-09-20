@@ -14,6 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@{viewModel.workingStatus.contains(viewModel.status) ? @color/colorBackgroundWorking : @color/colorBackgroundBreak}"
         tools:context=".MainActivity">
 
         <com.raagpc.timerview.TimerView
@@ -28,13 +29,16 @@
             android:layout_marginBottom="16dp"
             android:textSize="40sp"
             app:isBackward="true"
+            android:textColor="@{viewModel.workingStatus.contains(viewModel.status) ? @color/colorPrimary : @color/colorPrimaryBreak}"
+            app:colorPrimary="@{viewModel.workingStatus.contains(viewModel.status) ? @color/colorPrimary : @color/colorPrimaryBreak}"
+            app:colorSecondary="@{viewModel.workingStatus.contains(viewModel.status) ? @color/colorAccent : @color/colorAccentBreak}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:maxValue="1500"
             app:timeFormat="true"
-            app:timerStrokeWidth="20dp"
+            app:timerStrokeWidth="10dp"
             app:value="1500" />
 
         <ImageButton
@@ -42,7 +46,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:src="@android:drawable/ic_media_play"
+            android:src="@{viewModel.runningStatus.contains(viewModel.status) ? @drawable/ic_pause : @drawable/ic_play }"
+            android:tint="@{viewModel.workingStatus.contains(viewModel.status) ? @color/colorPrimary : @color/colorPrimaryBreak}"
+            android:background="@drawable/background_image_button"
             app:layout_constraintBottom_toTopOf="@id/reset_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -52,10 +58,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            android:src="@android:drawable/ic_menu_delete"
+            android:src="@drawable/ic_trash"
+            android:tint="@{viewModel.workingStatus.contains(viewModel.status) ? @color/colorPrimary : @color/colorPrimaryBreak}"
+            android:background="@drawable/background_image_button"
+            android:visibility="@{viewModel.showResetStatus.contains(viewModel.status) ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:text="@{viewModel.workingStatus.contains(viewModel.status) ? @string/keep_focus_message : @string/break_message }"
+            android:textColor="@{viewModel.workingStatus.contains(viewModel.status) ? @color/colorPrimary : @color/colorPrimaryBreak }"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/timer" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
