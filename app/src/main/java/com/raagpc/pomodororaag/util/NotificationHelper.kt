@@ -33,7 +33,7 @@ object NotificationHelper {
 
     private fun buildNotification(context: Context, @StringRes message: Int): NotificationCompat.Builder {
         return NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_play)
+            .setSmallIcon(R.drawable.ic_notification_icon)
             .setContentTitle(context.getString(R.string.app_name))
             .setContentText(context.getString(message))
             .setStyle(
