@@ -2,7 +2,6 @@ package com.raagpc.pomodororaag
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageButton
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -24,8 +23,6 @@ class MainActivity : AppCompatActivity() {
 
         val provider = MainActivityViewModelFactory(context = this)
         viewModel = ViewModelProvider(this, provider).get(MainActivityViewModel::class.java)
-
-        viewModel.status.value?.let { Log.i("TAG", it.toString()) }
 
         mBinding.viewModel = viewModel
 

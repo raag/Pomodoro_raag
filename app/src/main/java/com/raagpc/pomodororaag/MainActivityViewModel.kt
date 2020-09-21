@@ -1,7 +1,6 @@
 package com.raagpc.pomodororaag
 
 import android.content.Context
-import android.media.MediaPlayer
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.raagpc.pomodororaag.util.NotificationHelper
