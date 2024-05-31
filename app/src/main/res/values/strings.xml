@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Pomodoro raag</string>
-    <string name="keep_focus_message">Keep focus</string>
-    <string name="break_message">Take a break</string>
-    <string name="break_notification">It\'s time to take a break</string>
-    <string name="work_notification">Time to get back to work</string>
+    <string name="keep_focus_message">Keep Focus</string>
+    <string name="break_message">Take a Break</string>
+    <string name="break_notification">It\'s time to take a Break</string>
+    <string name="work_notification">Time to get back to Work</string>
 </resources>

@@ -23,25 +23,28 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.raagpc.pomodororaag.theme.PomodoroRaagTheme
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import java.util.Locale
 
 @Composable
 fun CircularProgress(
     modifier: Modifier = Modifier,
-    remainingSeconds: Float,
-    scheduledTimeSeconds: Float = 1500f, // 25 minutes
+    timeElapsed: Float,
+    scheduledTime: Float = 1500f, // 25 minutes
     textStyle: TextStyle = MaterialTheme.typography.subtitle2,
-    strokeWidth: Dp = 6.dp
+    strokeWidth: Dp = 6.dp,
+    color: Color = MaterialTheme.colors.primary,
+    textColor: Color = MaterialTheme.colors.onSurface
 ) {
 
-    val hours = (remainingSeconds / 3600).toInt()
-    val minutes = ((remainingSeconds % 3600) / 60).toInt()
-    val seconds = (remainingSeconds % 60).toInt()
+    val hours = (timeElapsed / 3600).toInt()
+    val minutes = ((timeElapsed % 3600) / 60).toInt()
+    val seconds = (timeElapsed % 60).toInt()
 
     val timeString = String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
 
-    val indicatorProgress = remainingSeconds / scheduledTimeSeconds
+    val indicatorProgress = timeElapsed / scheduledTime
     var progress by remember { mutableFloatStateOf(0f) }
     val progressAnimDuration = 150
     val progressAnimation by animateFloatAsState(
@@ -54,8 +57,8 @@ fun CircularProgress(
             modifier = modifier,
             progress = progressAnimation,
             strokeWidth = strokeWidth,
-            color = MaterialTheme.colors.primary,
-            strokeCap = StrokeCap.Butt,
+            color = color,
+            strokeCap = StrokeCap.Round,
             backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0.2f)
         )
         Text(
@@ -63,7 +66,7 @@ fun CircularProgress(
                 Alignment.Center
             ),
             style = textStyle,
-            color = MaterialTheme.colors.onSurface
+            color = textColor
         )
     }
     LaunchedEffect(indicatorProgress) {
@@ -78,8 +81,9 @@ fun CircularProgressPreview() {
     PomodoroRaagTheme {
         Surface {
             CircularProgress(
-                remainingSeconds = 1000f,
-                modifier = Modifier.size(150.dp)
+                timeElapsed = 1000f,
+                modifier = Modifier.size(150.dp),
+                textColor = Color.Black
             )
         }
     }
@@ -91,7 +95,7 @@ fun CircularProgressDarkPreview() {
     PomodoroRaagTheme(darkTheme = true) {
         Surface {
             CircularProgress(
-                remainingSeconds = 1000f,
+                timeElapsed = 1000f,
                 modifier = Modifier.size(150.dp)
             )
         }
