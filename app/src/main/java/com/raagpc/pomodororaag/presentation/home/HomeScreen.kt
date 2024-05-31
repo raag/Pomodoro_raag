@@ -45,7 +45,6 @@ fun HomeScreen(
             } else {
                 R.string.break_message
             }
-            Title(text = stringResource(id = message))
 
             val color = if (working) {
                 MaterialTheme.colors.primary
@@ -56,6 +55,8 @@ fun HomeScreen(
             val configuration = LocalConfiguration.current
             val screenWidth = configuration.screenWidthDp.dp
 
+            Title(text = stringResource(id = message))
+
             GlassContainer(modifier = Modifier.fillMaxSize()) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -63,7 +64,7 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.Center,
 
                     ) {
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(30.dp)) // Space to avoid overlapping with the status bar
                     CircularProgress(
                         modifier = Modifier
                             .padding(16.dp)
@@ -75,7 +76,6 @@ fun HomeScreen(
                         color = color
                     )
                     Spacer(modifier = Modifier.height(60.dp))
-
                     Controls(
                         isRunning = isRunning,
                         onToggleTimer = onToggleTimer,
