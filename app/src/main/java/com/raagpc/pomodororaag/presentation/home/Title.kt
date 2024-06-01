@@ -27,7 +27,7 @@ fun Title(text: String) {
             .fillMaxWidth()
             .padding(16.dp)
             .border(1.dp, Color.White.copy(alpha = 0.6f))
-            .background(Color.White.copy(alpha = 0.3f))
+            .background(Color.White.copy(alpha = 0.2f))
             .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {
