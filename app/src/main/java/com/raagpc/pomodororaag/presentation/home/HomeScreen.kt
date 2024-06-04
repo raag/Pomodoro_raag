@@ -30,8 +30,9 @@ fun HomeScreen(
 
     val workingTime: Boolean = state.workingTime
     val isRunning: Boolean = state.isRunning
-    val timeElapsed: Float = state.timeElapsed
+    val timeElapsed: Float = state.remainingTime
     val scheduledTime: Float = state.scheduledTime
+
 
     Surface(
         modifier = Modifier
@@ -81,7 +82,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(60.dp))
                     Controls(
                         isRunning = isRunning,
-                        onToggleTimer = onToggleTimer,
+                        onToggleTimer =  onToggleTimer,
                         onRestartTimer = onRestartTimer
                     )
                 }
@@ -98,7 +99,7 @@ fun HomePreview() {
         HomeScreen(
             HomeScreenState(
                 workingTime = true,
-                timeElapsed = 1000f,
+                remainingTime = 1000f,
                 scheduledTime = 1500f,
                 isRunning = true
             )
@@ -113,7 +114,7 @@ fun HomePreviewDark() {
         HomeScreen(
             HomeScreenState(
                 workingTime = true,
-                timeElapsed = 1000f,
+                remainingTime = 1000f,
                 scheduledTime = 1500f,
                 isRunning = true
             )
@@ -129,7 +130,7 @@ fun HomePreviewRest() {
         HomeScreen(
             HomeScreenState(
                 workingTime = false,
-                timeElapsed = 0f,
+                remainingTime = 0f,
                 scheduledTime = 250f,
             )
         )
@@ -143,7 +144,7 @@ fun HomePreviewRestDark() {
         HomeScreen(
             HomeScreenState(
                 workingTime = false,
-                timeElapsed = 0f,
+                remainingTime = 0f,
                 scheduledTime = 250f
             )
         )

@@ -1,8 +1,12 @@
 package com.raagpc.pomodororaag.presentation.home
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.raagpc.pomodororaag.data.CountdownService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import javax.inject.Inject
@@ -13,6 +17,17 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
 
     val state: State<HomeScreenState> get() = _state
 
+
+    private val broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val remainingTimeValue = intent?.getLongExtra(CountdownService.EXTRA_REMAINING_TIME, 0) ?: 0
+            _state.value = _state.value.copy(
+                remainingTime = remainingTimeValue.toFloat()
+            )
+        }
+    }
+
+
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
         exception.printStackTrace()
         _state.value = _state.value.copy(
@@ -20,17 +35,41 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
         )
     }
 
-    fun toggleTimer() {
+    fun toggleTimer(context: Context) {
         _state.value = _state.value.copy(
             isRunning = !_state.value.isRunning
         )
+
+        if (_state.value.isRunning) {
+            val serviceIntent = Intent(context, CountdownService::class.java).apply {
+                action = CountdownService.ACTION_RESUME
+            }
+            context.startService(serviceIntent)
+        } else {
+            val serviceIntent = Intent(context, CountdownService::class.java).apply {
+                action = CountdownService.ACTION_PAUSE
+            }
+            context.startService(serviceIntent)
+        }
+
     }
 
-    fun restartTimer() {
+    fun restartTimer(context: Context) {
         _state.value = _state.value.copy(
             isRunning = false,
-            timeElapsed = 0f
+            remainingTime = _state.value.scheduledTime
         )
+        val serviceIntent = Intent(context, CountdownService::class.java).apply {
+            action = CountdownService.ACTION_RESTART
+            putExtra(CountdownService.EXTRA_DURATION, _state.value.scheduledTime.toLong())
+        }
+
+        context.startService(serviceIntent)
+
+    }
+
+    fun getBroadcastReceiver(): BroadcastReceiver {
+        return broadcastReceiver
     }
 
 }
