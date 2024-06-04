@@ -23,30 +23,33 @@ import com.raagpc.pomodororaag.theme.PomodoroRaagTheme
 
 @Composable
 fun HomeScreen(
-    working: Boolean = true,
-    isRunning: Boolean = false,
-    timeElapsed: Float = 0f,
-    scheduledTime: Float = 1500f,
+    state: HomeScreenState,
     onToggleTimer: () -> Unit = {},
     onRestartTimer: () -> Unit = {}
 ) {
+
+    val workingTime: Boolean = state.workingTime
+    val isRunning: Boolean = state.isRunning
+    val timeElapsed: Float = state.timeElapsed
+    val scheduledTime: Float = state.scheduledTime
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
     ) {
         PomodoroBackground(
             isLightTheme = MaterialTheme.colors.isLight,
-            working = working,
+            working = workingTime,
             modifier = Modifier.fillMaxSize()
         ) {
 
-            val message = if (working) {
+            val message = if (workingTime) {
                 R.string.keep_focus_message
             } else {
                 R.string.break_message
             }
 
-            val color = if (working) {
+            val color = if (workingTime) {
                 MaterialTheme.colors.primary
             } else {
                 MaterialTheme.colors.secondary
@@ -93,10 +96,12 @@ fun HomeScreen(
 fun HomePreview() {
     PomodoroRaagTheme {
         HomeScreen(
-            working = true,
-            timeElapsed = 1000f,
-            scheduledTime = 1500f,
-            isRunning = true
+            HomeScreenState(
+                workingTime = true,
+                timeElapsed = 1000f,
+                scheduledTime = 1500f,
+                isRunning = true
+            )
         )
     }
 }
@@ -106,10 +111,12 @@ fun HomePreview() {
 fun HomePreviewDark() {
     PomodoroRaagTheme(darkTheme = true) {
         HomeScreen(
-            working = true,
-            timeElapsed = 1000f,
-            scheduledTime = 1500f,
-            isRunning = true
+            HomeScreenState(
+                workingTime = true,
+                timeElapsed = 1000f,
+                scheduledTime = 1500f,
+                isRunning = true
+            )
         )
     }
 }
@@ -120,9 +127,11 @@ fun HomePreviewDark() {
 fun HomePreviewRest() {
     PomodoroRaagTheme {
         HomeScreen(
-            working = false,
-            timeElapsed = 0f,
-            scheduledTime = 250f,
+            HomeScreenState(
+                workingTime = false,
+                timeElapsed = 0f,
+                scheduledTime = 250f,
+            )
         )
     }
 }
@@ -132,9 +141,11 @@ fun HomePreviewRest() {
 fun HomePreviewRestDark() {
     PomodoroRaagTheme(darkTheme = true) {
         HomeScreen(
-            working = false,
-            timeElapsed = 0f,
-            scheduledTime = 250f,
+            HomeScreenState(
+                workingTime = false,
+                timeElapsed = 0f,
+                scheduledTime = 250f
+            )
         )
     }
 }

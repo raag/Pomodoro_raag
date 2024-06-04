@@ -40,7 +40,7 @@ fun Controls(
                     contentDescription = "Stop",
                     modifier = Modifier
                         .width(50.dp)
-                        .clickable { })
+                        .clickable { onRestartTimer() })
             }
         }
         Row(
@@ -60,7 +60,7 @@ fun Controls(
                     contentDescription = "Play",
                     modifier = Modifier
                         .width(80.dp)
-                        .clickable { })
+                        .clickable { onToggleTimer() })
             }
         }
     }
