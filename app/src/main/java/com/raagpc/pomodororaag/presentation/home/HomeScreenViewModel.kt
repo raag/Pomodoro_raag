@@ -3,6 +3,9 @@ package com.raagpc.pomodororaag.presentation.home
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -34,6 +37,22 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
             error = exception.message
         )
     }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun initBroadcast(context: Context) {
+        val serviceIntent = Intent(context, CountdownService::class.java).apply {
+            putExtra(CountdownService.EXTRA_DURATION, _state.value.scheduledTime.toLong())
+        }
+        context.startService(serviceIntent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(
+                broadcastReceiver,
+                IntentFilter(CountdownService.BROADCAST_ACTION), Context.RECEIVER_NOT_EXPORTED
+            )
+        }
+    }
+
 
     fun toggleTimer(context: Context) {
         _state.value = _state.value.copy(
@@ -67,9 +86,4 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
         context.startService(serviceIntent)
 
     }
-
-    fun getBroadcastReceiver(): BroadcastReceiver {
-        return broadcastReceiver
-    }
-
 }
