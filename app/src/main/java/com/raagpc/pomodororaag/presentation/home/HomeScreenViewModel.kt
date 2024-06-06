@@ -23,6 +23,10 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val remainingTimeValue = intent?.getLongExtra(CountdownService.EXTRA_REMAINING_TIME, 0) ?: 0
+            if (remainingTimeValue == 0L) {
+                changeMode()
+                return
+            }
             _state.value = _state.value.copy(
                 remainingTime = remainingTimeValue.toFloat()
             )
@@ -39,7 +43,7 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun initBroadcast(context: Context) {
+    fun initBroadcastReceiver(context: Context) {
         Log.i("HomeScreenViewModel", "initBroadcast: Starting service")
         val serviceIntent = Intent(context, CountdownService::class.java).apply {
             putExtra(CountdownService.EXTRA_DURATION, _state.value.scheduledTime.toLong())
@@ -55,6 +59,11 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
 
 
     fun toggleTimer(context: Context) {
+
+        if (_state.value.remainingTime == _state.value.scheduledTime) {
+            restartTimer(context)
+        }
+
         _state.value = _state.value.copy(
             isRunning = !_state.value.isRunning
         )
@@ -88,6 +97,30 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
 
     fun unregisterBroadcast(context: Context) {
         context.unregisterReceiver(broadcastReceiver)
+    }
+
+    private fun changeMode() {
+        if (_state.value.workingTime) {
+            val time = if ((_state.value.completedLoops + 1) % 3 == 0) {
+                HomeScreenTimes.LONG_REST_TIME
+            } else {
+                HomeScreenTimes.REST_TIME
+            }
+            _state.value = _state.value.copy(
+                isRunning = false,
+                remainingTime = time,
+                scheduledTime = time,
+                workingTime = false,
+                completedLoops = _state.value.completedLoops + 1
+            )
+        } else {
+            _state.value = _state.value.copy(
+                isRunning = false,
+                remainingTime = HomeScreenTimes.WORKING_TIME,
+                scheduledTime = HomeScreenTimes.WORKING_TIME,
+                workingTime = true,
+            )
+        }
     }
 
 }

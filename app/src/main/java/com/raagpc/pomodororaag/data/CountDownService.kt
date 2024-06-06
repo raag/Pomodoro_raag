@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import androidx.core.app.NotificationCompat
+import com.raagpc.pomodororaag.PomodoroRaagApplication
 import com.raagpc.pomodororaag.R
 
 class CountdownService : Service() {
@@ -22,7 +23,6 @@ class CountdownService : Service() {
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var intent: Intent
-    private var startTime: Long = 0
     private var duration: Long = 0
     private var remainingTime: Long = 0
     private var isPaused: Boolean = false
@@ -72,7 +72,7 @@ class CountdownService : Service() {
                     sendBroadcast(intent)
                     handler.postDelayed(this, 1000)
                 } else {
-                    intent.putExtra(EXTRA_REMAINING_TIME, 0)
+                    intent.putExtra(EXTRA_REMAINING_TIME, 0L)
                     sendBroadcast(intent)
                     sendNotification()
                     stopSelf()
@@ -92,7 +92,7 @@ class CountdownService : Service() {
 
     private fun sendNotification() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notification = NotificationCompat.Builder(this, "countdown_channel")
+        val notification = NotificationCompat.Builder(this, PomodoroRaagApplication.CHANNEL_ID)
             .setContentTitle("Countdown Finished")
             .setContentText("The countdown has completed.")
             .setSmallIcon(R.drawable.ic_notification_icon)

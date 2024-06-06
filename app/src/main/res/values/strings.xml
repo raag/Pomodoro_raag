@@ -4,4 +4,7 @@
     <string name="break_message">Take a Break</string>
     <string name="break_notification">It\'s time to take a Break</string>
     <string name="work_notification">Time to get back to Work</string>
+    <string name="notification_channel_name" translatable="false">Pomodoro Raag</string>
+    <string name="notification_permission_required">Notification permission required</string>
+    <string name="go_to_settings">Go to Settings</string>
 </resources>

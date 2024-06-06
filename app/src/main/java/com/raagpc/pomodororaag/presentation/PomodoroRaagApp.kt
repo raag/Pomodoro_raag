@@ -27,7 +27,7 @@ fun PomodoroRaagApp() {
             val context = LocalContext.current
 
             LaunchedEffect(Unit) {
-                viewModel.initBroadcast(context)
+                viewModel.initBroadcastReceiver(context)
             }
             
                DisposableEffect(Unit) {

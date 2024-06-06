@@ -4,4 +4,6 @@
     <string name="break_message">Toma un descanso</string>
     <string name="break_notification">Hora de un descanso</string>
     <string name="work_notification">Hora de volver a trabajar</string>
+    <string name="notification_permission_required">Se requiere permiso de notificación</string>
+    <string name="go_to_settings">Ir a Configuración</string>
 </resources>
