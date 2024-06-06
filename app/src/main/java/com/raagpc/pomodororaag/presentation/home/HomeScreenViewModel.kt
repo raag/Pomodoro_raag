@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -17,9 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeScreenViewModel  @Inject constructor(): ViewModel() {
     private val _state = mutableStateOf(HomeScreenState())
-
     val state: State<HomeScreenState> get() = _state
-
 
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -41,14 +40,15 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun initBroadcast(context: Context) {
+        Log.i("HomeScreenViewModel", "initBroadcast: Starting service")
         val serviceIntent = Intent(context, CountdownService::class.java).apply {
             putExtra(CountdownService.EXTRA_DURATION, _state.value.scheduledTime.toLong())
         }
-        context.startService(serviceIntent)
+        context.startForegroundService(serviceIntent)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.registerReceiver(
                 broadcastReceiver,
-                IntentFilter(CountdownService.BROADCAST_ACTION), Context.RECEIVER_NOT_EXPORTED
+                IntentFilter(CountdownService.BROADCAST_ACTION), Context.RECEIVER_EXPORTED
             )
         }
     }
@@ -84,6 +84,10 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
         }
 
         context.startService(serviceIntent)
-
     }
+
+    fun unregisterBroadcast(context: Context) {
+        context.unregisterReceiver(broadcastReceiver)
+    }
+
 }

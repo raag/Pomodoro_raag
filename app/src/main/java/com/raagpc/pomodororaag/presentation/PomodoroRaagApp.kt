@@ -1,8 +1,10 @@
 package com.raagpc.pomodororaag.presentation
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +29,13 @@ fun PomodoroRaagApp() {
             LaunchedEffect(Unit) {
                 viewModel.initBroadcast(context)
             }
+            
+               DisposableEffect(Unit) {
+                    onDispose {
+                        Log.i("PomodoroRaagApp", "onDispose: Unregistering broadcast")
+                        viewModel.unregisterBroadcast(context)
+                    }
+                }
 
             HomeScreen(
                 state = state,
