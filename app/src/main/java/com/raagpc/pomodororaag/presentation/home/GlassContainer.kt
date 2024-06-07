@@ -20,7 +20,7 @@ import com.raagpc.pomodororaag.theme.PomodoroRaagTheme
 fun GlassContainer(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
         Box(
             modifier = modifier
-                .padding(30.dp)
+                .padding(horizontal = 30.dp, vertical = 50.dp)
                 .border(1.dp, Color.White.copy(alpha = 0.6f), RoundedCornerShape(16.dp))
                 .clip(RoundedCornerShape(16.dp))
                 .background(Color.White.copy(alpha = 0.2f)),

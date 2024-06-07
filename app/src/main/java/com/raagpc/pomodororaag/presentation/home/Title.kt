@@ -23,7 +23,7 @@ import com.raagpc.pomodororaag.theme.PomodoroRaagTheme
 fun Title(text: String) {
     Box(
         Modifier
-            .offset(y = 60.dp)
+            .offset(y = 70.dp)
             .fillMaxWidth()
             .padding(16.dp)
             .border(1.dp, Color.White.copy(alpha = 0.6f))
