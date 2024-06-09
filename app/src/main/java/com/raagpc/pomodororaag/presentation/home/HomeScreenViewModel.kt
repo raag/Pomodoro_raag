@@ -1,18 +1,15 @@
 package com.raagpc.pomodororaag.presentation.home
 
-import android.content.BroadcastReceiver
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.os.Build
+import android.os.CountDownTimer
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.raagpc.pomodororaag.data.CountdownService
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,48 +17,19 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
     private val _state = mutableStateOf(HomeScreenState())
     val state: State<HomeScreenState> get() = _state
 
-    private val broadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val remainingTimeValue = intent?.getLongExtra(CountdownService.EXTRA_REMAINING_TIME, 0) ?: 0
-            if (remainingTimeValue == 0L) {
-                changeMode()
-                return
-            }
-            _state.value = _state.value.copy(
-                remainingTime = remainingTimeValue.toFloat()
-            )
-        }
+    private lateinit var countDownTimer: CountDownTimer
+    @SuppressLint("StaticFieldLeak")
+    private lateinit var context: Context
+
+
+    fun setContext(context: Context) {
+        this.context = context
     }
 
 
-    private val errorHandler = CoroutineExceptionHandler { _, exception ->
-        exception.printStackTrace()
-        _state.value = _state.value.copy(
-            error = exception.message
-        )
-    }
-
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun initBroadcastReceiver(context: Context) {
-        Log.i("HomeScreenViewModel", "initBroadcast: Starting service")
-        val serviceIntent = Intent(context, CountdownService::class.java).apply {
-            putExtra(CountdownService.EXTRA_DURATION, _state.value.scheduledTime.toLong())
-        }
-        context.startForegroundService(serviceIntent)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(
-                broadcastReceiver,
-                IntentFilter(CountdownService.BROADCAST_ACTION), Context.RECEIVER_NOT_EXPORTED
-            )
-        }
-    }
-
-
-    fun toggleTimer(context: Context) {
-
+    fun toggleTimer() {
         if (_state.value.remainingTime == _state.value.scheduledTime) {
-            restartTimer(context)
+            restartTimer()
         }
 
         _state.value = _state.value.copy(
@@ -69,35 +37,38 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
         )
 
         if (_state.value.isRunning) {
-            val serviceIntent = Intent(context, CountdownService::class.java).apply {
-                action = CountdownService.ACTION_RESUME
-            }
-            context.startService(serviceIntent)
+            countDownTimer.start()
         } else {
-            val serviceIntent = Intent(context, CountdownService::class.java).apply {
-                action = CountdownService.ACTION_PAUSE
-            }
-            context.startService(serviceIntent)
+            countDownTimer.cancel()
         }
 
     }
 
-    fun restartTimer(context: Context) {
+    fun restartTimer() {
         _state.value = _state.value.copy(
             isRunning = false,
             remainingTime = _state.value.scheduledTime
         )
-        val serviceIntent = Intent(context, CountdownService::class.java).apply {
-            action = CountdownService.ACTION_RESTART
-            putExtra(CountdownService.EXTRA_DURATION, _state.value.scheduledTime.toLong())
+
+        countDownTimer = object : CountDownTimer(_state.value.scheduledTime * 1000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                Log.i("HomeScreenViewModel", "onTick: ${millisUntilFinished / 1000}")
+                _state.value = _state.value.copy(
+                    remainingTime = millisUntilFinished / 1000
+                )
+            }
+
+            override fun onFinish() {
+               _state.value = _state.value.copy(
+                    isRunning = false
+                )
+                sendNotification()
+                changeMode()
+            }
         }
-
-        context.startService(serviceIntent)
     }
 
-    fun unregisterBroadcast(context: Context) {
-        context.unregisterReceiver(broadcastReceiver)
-    }
+
 
     private fun changeMode() {
         if (_state.value.workingTime) {
@@ -120,6 +91,15 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
                 scheduledTime = HomeScreenTimes.WORKING_TIME,
                 workingTime = true,
             )
+        }
+    }
+
+    fun sendNotification() {
+        context.let {
+            val serviceIntent = Intent(it, CountdownService::class.java).apply {
+                action = CountdownService.ACTION_SEND_NOTIFICATION
+            }
+            it.startService(serviceIntent)
         }
     }
 

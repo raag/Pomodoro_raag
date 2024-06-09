@@ -30,8 +30,8 @@ import java.util.Locale
 @Composable
 fun CircularProgress(
     modifier: Modifier = Modifier,
-    timeElapsed: Float,
-    scheduledTime: Float = 1500f, // 25 minutes
+    timeElapsed: Long,
+    scheduledTime: Long = 1500L, // 25 minutes
     textStyle: TextStyle = MaterialTheme.typography.subtitle2,
     strokeWidth: Dp = 6.dp,
     color: Color = MaterialTheme.colors.primary,
@@ -44,7 +44,7 @@ fun CircularProgress(
 
     val timeString = String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
 
-    val indicatorProgress = timeElapsed / scheduledTime
+    val indicatorProgress = timeElapsed.toFloat() / scheduledTime.toFloat()
     var progress by remember { mutableFloatStateOf(0f) }
     val progressAnimDuration = 150
     val progressAnimation by animateFloatAsState(
@@ -81,7 +81,7 @@ fun CircularProgressPreview() {
     PomodoroRaagTheme {
         Surface {
             CircularProgress(
-                timeElapsed = 1000f,
+                timeElapsed = 1000,
                 modifier = Modifier.size(150.dp),
                 textColor = Color.Black
             )
@@ -95,7 +95,7 @@ fun CircularProgressDarkPreview() {
     PomodoroRaagTheme(darkTheme = true) {
         Surface {
             CircularProgress(
-                timeElapsed = 1000f,
+                timeElapsed = 1000L,
                 modifier = Modifier.size(150.dp)
             )
         }

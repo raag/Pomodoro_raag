@@ -4,7 +4,6 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -27,20 +26,15 @@ fun PomodoroRaagApp() {
             val context = LocalContext.current
 
             LaunchedEffect(Unit) {
-                viewModel.initBroadcastReceiver(context)
+                Log.i("PomodoroRaagApp", "Setting context for view model")
+                viewModel.setContext(context)
             }
             
-               DisposableEffect(Unit) {
-                    onDispose {
-                        Log.i("PomodoroRaagApp", "onDispose: Unregistering broadcast")
-                        viewModel.unregisterBroadcast(context)
-                    }
-                }
 
             HomeScreen(
                 state = state,
-                onToggleTimer = { viewModel.toggleTimer(context) },
-                onRestartTimer = { viewModel.restartTimer(context) }
+                onToggleTimer = { viewModel.toggleTimer() },
+                onRestartTimer = { viewModel.restartTimer() }
             )
         }
     }

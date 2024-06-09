@@ -30,8 +30,8 @@ fun HomeScreen(
 
     val workingTime: Boolean = state.workingTime
     val isRunning: Boolean = state.isRunning
-    val timeElapsed: Float = state.remainingTime
-    val scheduledTime: Float = state.scheduledTime
+    val timeElapsed: Long = state.remainingTime
+    val scheduledTime: Long = state.scheduledTime
 
 
     Surface(
@@ -99,8 +99,8 @@ fun HomePreview() {
         HomeScreen(
             HomeScreenState(
                 workingTime = true,
-                remainingTime = 1000f,
-                scheduledTime = 1500f,
+                remainingTime = 1000L,
+                scheduledTime = 1500L,
                 isRunning = true
             )
         )
@@ -114,8 +114,8 @@ fun HomePreviewDark() {
         HomeScreen(
             HomeScreenState(
                 workingTime = true,
-                remainingTime = 1000f,
-                scheduledTime = 1500f,
+                remainingTime = 1000L,
+                scheduledTime = 1500L,
                 isRunning = true
             )
         )
@@ -130,8 +130,8 @@ fun HomePreviewRest() {
         HomeScreen(
             HomeScreenState(
                 workingTime = false,
-                remainingTime = 0f,
-                scheduledTime = 250f,
+                remainingTime = 0L,
+                scheduledTime = 250L,
             )
         )
     }
@@ -144,8 +144,8 @@ fun HomePreviewRestDark() {
         HomeScreen(
             HomeScreenState(
                 workingTime = false,
-                remainingTime = 0f,
-                scheduledTime = 250f
+                remainingTime = 0L,
+                scheduledTime = 250L
             )
         )
     }
