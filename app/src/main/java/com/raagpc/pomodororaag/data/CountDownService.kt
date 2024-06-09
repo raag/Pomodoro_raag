@@ -1,15 +1,18 @@
 package com.raagpc.pomodororaag.data
 
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import androidx.core.app.NotificationCompat
 import com.raagpc.pomodororaag.PomodoroRaagApplication
 import com.raagpc.pomodororaag.R
+import com.raagpc.pomodororaag.presentation.MainActivity
 
 class CountdownService : Service() {
     companion object {
@@ -26,6 +29,8 @@ class CountdownService : Service() {
     private var duration: Long = 0
     private var remainingTime: Long = 0
     private var isPaused: Boolean = false
+
+    private val mediaPlayer = MediaPlayer.create(applicationContext, R.raw.beep)
 
     override fun onCreate() {
         super.onCreate()
@@ -74,6 +79,10 @@ class CountdownService : Service() {
                 } else {
                     intent.putExtra(EXTRA_REMAINING_TIME, 0L)
                     sendBroadcast(intent)
+
+                    // play beep.wav
+                    mediaPlayer.start()
+
                     sendNotification()
                     stopSelf()
                 }
@@ -92,12 +101,22 @@ class CountdownService : Service() {
 
     private fun sendNotification() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // open MainActivity when notification is clicked
+        val notificationIntent = Intent(this, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE )
+
+
         val notification = NotificationCompat.Builder(this, PomodoroRaagApplication.CHANNEL_ID)
             .setContentTitle("Countdown Finished")
             .setContentText("The countdown has completed.")
             .setSmallIcon(R.drawable.ic_notification_icon)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
             .build()
+
+        notification.flags = NotificationCompat.FLAG_AUTO_CANCEL
+
         notificationManager.notify(1, notification)
     }
 }

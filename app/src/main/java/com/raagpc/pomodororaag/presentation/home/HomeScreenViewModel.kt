@@ -52,7 +52,7 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.registerReceiver(
                 broadcastReceiver,
-                IntentFilter(CountdownService.BROADCAST_ACTION), Context.RECEIVER_EXPORTED
+                IntentFilter(CountdownService.BROADCAST_ACTION), Context.RECEIVER_NOT_EXPORTED
             )
         }
     }
