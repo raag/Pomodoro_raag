@@ -55,7 +55,7 @@ class CountdownService : Service() {
         val notification = NotificationCompat.Builder(this, PomodoroRaagApplication.CHANNEL_ID)
             .setContentTitle("Countdown Finished")
             .setContentText("The countdown has completed.")
-            .setSmallIcon(R.drawable.ic_notification_icon)
+            .setSmallIcon(R.mipmap.ic_launcher_round)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .build()

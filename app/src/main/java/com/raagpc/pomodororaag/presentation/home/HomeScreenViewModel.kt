@@ -28,16 +28,12 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
 
 
     fun toggleTimer() {
-        if (_state.value.remainingTime == _state.value.scheduledTime) {
-            restartTimer()
-        }
-
         _state.value = _state.value.copy(
             isRunning = !_state.value.isRunning
         )
 
         if (_state.value.isRunning) {
-            countDownTimer.start()
+            startTimer(_state.value.remainingTime)
         } else {
             countDownTimer.cancel()
         }
@@ -45,12 +41,19 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
     }
 
     fun restartTimer() {
+        countDownTimer.cancel()
         _state.value = _state.value.copy(
             isRunning = false,
             remainingTime = _state.value.scheduledTime
         )
 
-        countDownTimer = object : CountDownTimer(_state.value.scheduledTime * 1000, 1000) {
+//        startTimer(_state.value.scheduledTime)
+
+    }
+
+
+    private fun startTimer(time: Long) {
+        countDownTimer = object : CountDownTimer(time * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 Log.i("HomeScreenViewModel", "onTick: ${millisUntilFinished / 1000}")
                 _state.value = _state.value.copy(
@@ -59,13 +62,13 @@ class HomeScreenViewModel  @Inject constructor(): ViewModel() {
             }
 
             override fun onFinish() {
-               _state.value = _state.value.copy(
+                _state.value = _state.value.copy(
                     isRunning = false
                 )
                 sendNotification()
                 changeMode()
             }
-        }
+        }.start()
     }
 
 
