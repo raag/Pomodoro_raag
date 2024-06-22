@@ -1,8 +1,6 @@
 package com.raagpc.pomodororaag.presentation
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -14,7 +12,6 @@ import androidx.navigation.compose.rememberNavController
 import com.raagpc.pomodororaag.presentation.home.HomeScreen
 import com.raagpc.pomodororaag.presentation.home.HomeScreenViewModel
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PomodoroRaagApp() {
     val navController = rememberNavController()

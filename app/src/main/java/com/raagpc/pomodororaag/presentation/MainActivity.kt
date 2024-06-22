@@ -13,11 +13,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.AlertDialog
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Text
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
@@ -38,11 +35,13 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                window.isNavigationBarContrastEnforced = false
+            }
             PomodoroRaagTheme {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     CheckNotificationPermission()
@@ -63,11 +62,12 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun CheckNotificationPermission() {
         val permission = Manifest.permission.POST_NOTIFICATIONS
+
         when {
             ContextCompat.checkSelfPermission(
                 this, permission
             ) == PackageManager.PERMISSION_GRANTED -> {
-                // make your action here
+                Log.i("MainActivity", "CheckNotificationPermission: Permission granted")
             }
 
             shouldShowRequestPermissionRationale(permission) -> {
@@ -92,4 +92,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+
 }

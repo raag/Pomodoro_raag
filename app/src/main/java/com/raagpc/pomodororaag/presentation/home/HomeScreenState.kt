@@ -10,7 +10,7 @@ data class HomeScreenState (
 )
 
 object HomeScreenTimes {
-    const val WORKING_TIME = 1500L
-    const val REST_TIME = 300L
-    const val LONG_REST_TIME = 900L
+    const val WORKING_TIME = 15L
+    const val REST_TIME = 3L
+    const val LONG_REST_TIME = 9L
 }
